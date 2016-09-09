@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ParkMan demo</string>
+    <string name="name">Name</string>
+    <string name="provider">Provider</string>
+    <string name="max_duration">Max. %.0f min</string>
+    <string name="email">Email</string>
+    <string name="park">Start Parking</string>
+    <string name="payment_allowed">Payment allowed</string>
+    <string name="payment_not_allowed">Payment not allowed</string>
+</resources>
