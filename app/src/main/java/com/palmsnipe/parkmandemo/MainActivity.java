@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mPin.setVisibility(View.GONE);
         }
         else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            mPin.setText("");
-            mPin.setVisibility(View.VISIBLE);
             checkZoneAvailable();
         }
     }
@@ -207,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void checkZoneAvailable() {
+        mPin.setText("");
+        mPin.setVisibility(View.VISIBLE);
         // check if the pin is on a zone
         LatLng center = mMap.getCameraPosition().target;
         boolean isInside = false;
