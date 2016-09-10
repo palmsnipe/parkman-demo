@@ -151,11 +151,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onDrag(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            // Set the default color of the zone
-            if (mSelected != null)
-                mSelected.getPolygon().setFillColor(mSelected.getZone().getZoneColor());
-            mSelected = null;
-
             mPin.setVisibility(View.GONE);
         }
         else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -205,8 +200,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void checkZoneAvailable() {
+        // Set the default color of the zone
+        if (mSelected != null)
+            mSelected.getPolygon().setFillColor(mSelected.getZone().getZoneColor());
+
         mPin.setText("");
         mPin.setVisibility(View.VISIBLE);
+
         // check if the pin is on a zone
         LatLng center = mMap.getCameraPosition().target;
         boolean isInside = false;
