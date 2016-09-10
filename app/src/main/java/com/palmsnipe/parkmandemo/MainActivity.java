@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, MapWrapperLayout.OnDragListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, MapWrapperLayout.OnDragListener, View.OnClickListener, GoogleMap.OnCameraIdleListener {
 
     private LatLng mCurrentLocation;
     private LocationData mData;
@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnCameraIdleListener(this);
+
+        // Load json data
         new LoadDataTask().execute();
     }
 
@@ -158,24 +161,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             mPin.setText("");
             mPin.setVisibility(View.VISIBLE);
-
-            // check if the pin is on a zone
-            LatLng center = mMap.getCameraPosition().target;
-            boolean isInside = false;
-            for (PolygonZone item : mZones) {
-                isInside = MapHelper.isPointInPolygon(center, item.getPolygon().getPoints());
-
-                if (isInside) {
-                    zoneSelected(item);
-                    break;
-                }
-            }
-            if (!isInside) {
-                // Hide the bottom sheet
-                if (!mBottomSheetBehavior.isHideable())
-                    mBottomSheetBehavior.setHideable(true);
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
         }
     }
 
@@ -212,6 +197,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         zone.getPaymentIsAllowed() == 1 ? getString(R.string.payment_allowed) : getString(R.string.payment_not_allowed));
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    @Override
+    public void onCameraIdle() {
+        // check if the pin is on a zone
+        LatLng center = mMap.getCameraPosition().target;
+        boolean isInside = false;
+
+        for (PolygonZone item : mZones) {
+            isInside = MapHelper.isPointInPolygon(center, item.getPolygon().getPoints());
+
+            if (isInside) {
+                zoneSelected(item);
+                break;
+            }
+        }
+        if (!isInside) {
+            // Hide the bottom sheet
+            if (!mBottomSheetBehavior.isHideable())
+                mBottomSheetBehavior.setHideable(true);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
 
